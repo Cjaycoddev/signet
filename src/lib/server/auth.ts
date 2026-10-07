@@ -29,7 +29,13 @@ function sign(id: string) {
 
 export function setSession(cookies: Cookies, id: string) {
 	const token = `${id}.${sign(id)}.${randomBytes(8).toString('hex')}`;
-	cookies.set(COOKIE, token, { path: '/', httpOnly: true, sameSite: 'lax', maxAge: 60 * 60 * 12 });
+	cookies.set(COOKIE, token, {
+		path: '/',
+		httpOnly: true,
+		sameSite: 'lax',
+		secure: process.env.NODE_ENV === 'production',
+		maxAge: 60 * 60 * 12
+	});
 }
 
 export function clearSession(cookies: Cookies) {

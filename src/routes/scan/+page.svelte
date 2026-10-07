@@ -22,10 +22,13 @@
 
 	let { data } = $props();
 	let video: HTMLVideoElement | undefined = $state();
-	let message = $state('Point at the front plate. Eight centimetres, flat, clear of the screen.');
+	let message = $state('Tap the frame, then hold the tag inside the corners.');
 	let busy = $state(false);
+	let live = $state(false);
 	let result = $state<InspectResult | null>(null);
 	let locked = false;
+	let stopCamera = () => {};
+	let QrReader: (new (elementId: string) => { start: Function; stop: () => Promise<void> }) | null = null;
 
 	const stampTone = (outcome: string) => {
 		if (outcome === 'sealed' || outcome === 'backup') return 'good';
@@ -78,39 +81,36 @@
 		reader.clear();
 	}
 
-	onMount(() => {
-		let dead = false;
-		let stream: MediaStream | null = null;
-		let timer = 0;
+	async function openCamera() {
+		if (live) return;
 		const Detector = (window as unknown as { BarcodeDetector?: new (opts: { formats: string[] }) => { detect: (source: HTMLVideoElement) => Promise<Array<{ rawValue: string }>> } }).BarcodeDetector;
-
-		let reader: { stop: () => Promise<void> } | null = null;
-		(async () => {
-			try {
-				if (!Detector) {
-					const { Html5Qrcode } = await import('html5-qrcode');
-					const next = new Html5Qrcode('qr-fallback');
-					reader = next;
-					await next.start(
-						{ facingMode: 'environment' },
-						{ fps: 8, qrbox: { width: 220, height: 220 } },
-						(text) => {
-							if (locked) return;
-							locked = true;
-							void submit(text);
-						},
-						() => {}
-					);
-					return;
-				}
-				stream = await navigator.mediaDevices.getUserMedia({
+		try {
+			if (!Detector) {
+				const Ctor = QrReader ?? (await import('html5-qrcode')).Html5Qrcode;
+				const reader = new Ctor('qr-fallback');
+				await reader.start(
+					{ facingMode: 'environment' },
+					{ fps: 10, qrbox: { width: 220, height: 220 } },
+					(text) => {
+						if (locked) return;
+						locked = true;
+						void submit(text);
+					},
+					() => {}
+				);
+				stopCamera = () => {
+					void reader.stop().catch(() => {});
+				};
+			} else if (video) {
+				const stream = await navigator.mediaDevices.getUserMedia({
 					audio: false,
 					video: { facingMode: { ideal: 'environment' } }
 				});
-				if (dead || !video) return;
 				video.srcObject = stream;
 				await video.play();
 				const detector = new Detector({ formats: ['qr_code'] });
+				let timer = 0;
+				let dead = false;
 				const tick = async () => {
 					if (dead) return;
 					if (!locked && video && video.readyState >= 2) {
@@ -127,17 +127,24 @@
 					timer = window.setTimeout(tick, 160);
 				};
 				void tick();
-			} catch {
-				if (!dead) message = 'Camera stayed shut. Open a floor tag on another screen, or choose a photo of one.';
+				stopCamera = () => {
+					dead = true;
+					window.clearTimeout(timer);
+					stream.getTracks().forEach((track) => track.stop());
+				};
 			}
-		})();
+			live = true;
+			message = 'Hold the tag steady inside the corners.';
+		} catch {
+			message = 'The camera stayed shut. Allow camera access, or take a photo of the tag.';
+		}
+	}
 
-		return () => {
-			dead = true;
-			window.clearTimeout(timer);
-			stream?.getTracks().forEach((track) => track.stop());
-			void reader?.stop();
-		};
+	onMount(() => {
+		void import('html5-qrcode').then((mod) => {
+			QrReader = mod.Html5Qrcode;
+		});
+		return () => stopCamera();
 	});
 </script>
 
@@ -152,9 +159,14 @@
 	</header>
 
 	<div class="finder mt-4">
-		<video bind:this={video} class="h-full w-full object-cover" playsinline autoplay muted></video>
+		<video bind:this={video} class="absolute inset-0 h-full w-full object-cover" playsinline autoplay muted></video>
 		<div id="qr-fallback" class="absolute inset-0"></div>
 		<div class="brackets" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+		{#if !live}
+			<button class="absolute inset-0 z-10 grid place-items-center" type="button" onclick={openCamera}>
+				<span class="btn btn-seal">Open camera</span>
+			</button>
+		{/if}
 	</div>
 	<div id="photo-reader" class="hidden"></div>
 
