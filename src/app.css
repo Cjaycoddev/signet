@@ -1,0 +1,210 @@
+@import 'tailwindcss';
+
+@theme {
+	--font-display: 'Instrument Serif', Georgia, serif;
+	--font-sans: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+	--font-mono: 'DM Mono', ui-monospace, monospace;
+	--color-ink: #16130f;
+	--color-paper: #f6f0e6;
+	--color-foam: #fffaf3;
+	--color-seal: #e23d2b;
+	--color-wax: #9d2418;
+	--color-gold: #e4b15a;
+	--color-moss: #1f6b45;
+	--color-mist: #74685c;
+	--color-line: #e4d8c8;
+}
+
+html {
+	font-family: var(--font-sans);
+	color: var(--color-ink);
+	background: #100e0c;
+}
+
+body {
+	min-height: 100vh;
+	background:
+		radial-gradient(900px 420px at 100% -10%, rgba(226, 61, 43, 0.18), transparent 55%),
+		radial-gradient(700px 380px at -10% 0%, rgba(228, 177, 90, 0.12), transparent 50%),
+		#100e0c;
+}
+
+button,
+input {
+	font: inherit;
+	color: inherit;
+}
+
+button {
+	cursor: pointer;
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+}
+
+:focus-visible {
+	outline: 3px solid rgba(226, 61, 43, 0.55);
+	outline-offset: 2px;
+}
+
+.display {
+	font-family: var(--font-display);
+	font-weight: 400;
+	letter-spacing: -0.03em;
+	line-height: 0.92;
+}
+
+.plate {
+	font-family: var(--font-mono);
+	letter-spacing: 0.04em;
+}
+
+.btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 52px;
+	padding: 0 1.25rem;
+	border-radius: 999px;
+	border: 1px solid transparent;
+	font-weight: 600;
+	letter-spacing: -0.02em;
+	transition: transform 0.16s ease, background 0.16s ease;
+}
+
+.btn:hover {
+	transform: translateY(-1px);
+}
+
+.btn:active {
+	transform: scale(0.98);
+}
+
+.btn-seal {
+	background: #e23d2b;
+	color: white;
+}
+
+.btn-seal:hover {
+	background: #c43222;
+}
+
+.btn-ink {
+	background: #16130f;
+	color: #f6f0e6;
+}
+
+.btn-ghost {
+	background: transparent;
+	border-color: rgba(246, 240, 230, 0.28);
+	color: #f6f0e6;
+}
+
+.btn-line {
+	background: white;
+	border-color: #e4d8c8;
+	color: #16130f;
+}
+
+.card {
+	background: rgba(255, 250, 243, 0.96);
+	border: 1px solid #e4d8c8;
+	border-radius: 28px;
+	box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
+}
+
+.field {
+	width: 100%;
+	min-height: 52px;
+	border-radius: 16px;
+	border: 1px solid #e4d8c8;
+	background: white;
+	padding: 0 1rem;
+}
+
+.desk {
+	transition: transform 0.16s ease, border-color 0.16s ease;
+}
+
+.desk:hover {
+	transform: translateY(-2px);
+	border-color: #16130f;
+}
+
+.finder {
+	position: relative;
+	overflow: hidden;
+	border-radius: 28px;
+	background: #1a1612;
+	aspect-ratio: 3 / 4;
+}
+
+.finder video,
+.finder video + div,
+#qr-fallback,
+#qr-fallback video {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.brackets {
+	pointer-events: none;
+	position: absolute;
+	inset: 14% 12%;
+	border-radius: 18px;
+	box-shadow: 0 0 0 999px rgba(10, 8, 6, 0.28);
+}
+
+.brackets span {
+	position: absolute;
+	width: 28px;
+	height: 28px;
+	border: 3px solid #f6f0e6;
+}
+
+.brackets span:nth-child(1) { top: 0; left: 0; border-right: 0; border-bottom: 0; }
+.brackets span:nth-child(2) { top: 0; right: 0; border-left: 0; border-bottom: 0; }
+.brackets span:nth-child(3) { bottom: 0; left: 0; border-right: 0; border-top: 0; }
+.brackets span:nth-child(4) { bottom: 0; right: 0; border-left: 0; border-top: 0; }
+
+.stamp {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 7.5rem;
+	min-height: 7.5rem;
+	padding: 0.6rem;
+	border: 3px solid currentColor;
+	border-radius: 999px;
+	font-size: 0.78rem;
+	font-weight: 700;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	transform: rotate(-8deg);
+	animation: press 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.good { color: #1f6b45; }
+.warn { color: #9a6412; }
+.bad { color: #9d2418; }
+
+.sheet {
+	animation: rise 0.45s ease both;
+}
+
+@keyframes press {
+	0% { transform: scale(1.35) rotate(-16deg); opacity: 0; }
+	100% { transform: scale(1) rotate(-8deg); opacity: 1; }
+}
+
+@keyframes rise {
+	from { opacity: 0; transform: translateY(16px); }
+	to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.stamp, .sheet, .btn, .desk { animation: none; transition: none; }
+}
