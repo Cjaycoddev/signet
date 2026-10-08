@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Signet — Proposal to the County Government</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+	@page { size: A4; margin: 20mm 18mm 18mm; }
+	@page :first { margin: 0; }
+
+	:root {
+		--ink: #16130f;
+		--paper: #f6f0e6;
+		--foam: #fffaf3;
+		--seal: #e23d2b;
+		--wax: #9d2418;
+		--gold: #e4b15a;
+		--moss: #1f6b45;
+		--mist: #74685c;
+		--line: #e4d8c8;
+		--amber: #9a6412;
+	}
+
+	* { box-sizing: border-box; }
+	html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+	body {
+		margin: 0;
+		font-family: 'Outfit', system-ui, sans-serif;
+		font-size: 10.5pt;
+		line-height: 1.55;
+		color: var(--ink);
+		background: #fff;
+	}
+
+	h1, h2, h3 { margin: 0; font-weight: 400; }
+	h2 {
+		font-family: 'Instrument Serif', Georgia, serif;
+		font-size: 30pt;
+		line-height: 1;
+		letter-spacing: -0.02em;
+	}
+	h3 { font-size: 12pt; font-weight: 600; margin-top: 14pt; }
+	p { margin: 6pt 0; }
+	ul { margin: 6pt 0; padding-left: 16pt; }
+	li { margin: 3pt 0; }
+	strong { font-weight: 600; }
+
+	.kicker {
+		font-size: 8pt;
+		font-weight: 700;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--seal);
+		margin-bottom: 8pt;
+	}
+	.lead { font-size: 12.5pt; line-height: 1.5; color: #3a332c; max-width: 150mm; }
+	.mono { font-family: 'DM Mono', monospace; }
+	.fill { background: #fff3c4; padding: 0 3pt; border-radius: 3pt; }
+	.page { break-before: page; }
+	.avoid { break-inside: avoid; }
+	.muted { color: var(--mist); }
+
+	/* Cover */
+	.cover {
+		position: relative;
+		width: 210mm;
+		height: 297mm;
+		overflow: hidden;
+		padding: 22mm 20mm;
+		color: var(--paper);
+		background:
+			radial-gradient(160mm 120mm at 105% -5%, rgba(226, 61, 43, 0.42), transparent 60%),
+			radial-gradient(140mm 100mm at -10% 10%, rgba(228, 177, 90, 0.18), transparent 55%),
+			#100e0c;
+		display: flex;
+		flex-direction: column;
+	}
+	.brand { display: flex; align-items: center; gap: 10pt; font-size: 15pt; font-weight: 600; letter-spacing: 0.02em; }
+	.seal-mark {
+		width: 34pt; height: 34pt; border-radius: 50%;
+		background: radial-gradient(circle at 35% 30%, #f05a45, var(--seal) 45%, var(--wax));
+		display: grid; place-items: center;
+		font-family: 'Instrument Serif', serif; font-size: 22pt; color: var(--foam);
+		box-shadow: 0 0 0 3pt rgba(226, 61, 43, 0.25);
+	}
+	.cover h1 {
+		font-family: 'Instrument Serif', Georgia, serif;
+		font-size: 64pt;
+		line-height: 0.92;
+		letter-spacing: -0.03em;
+		margin-top: 52mm;
+	}
+	.cover h1 em { color: var(--gold); }
+	.cover .sub { font-size: 14pt; max-width: 135mm; color: rgba(246, 240, 230, 0.78); margin-top: 14pt; }
+	.cover .stamp {
+		position: absolute; right: 22mm; top: 60mm;
+		width: 46mm; height: 46mm; border-radius: 50%;
+		border: 3pt solid var(--seal); color: var(--seal);
+		display: grid; place-items: center; text-align: center;
+		transform: rotate(-12deg);
+		font-weight: 700; font-size: 9pt; letter-spacing: 0.16em; text-transform: uppercase;
+		line-height: 1.4;
+	}
+	.cover .stamp b { display: block; font-family: 'Instrument Serif', serif; font-size: 26pt; letter-spacing: 0; text-transform: none; font-weight: 400; }
+	.cover .meta {
+		margin-top: auto;
+		display: grid; grid-template-columns: repeat(3, 1fr); gap: 10pt;
+		border-top: 1px solid rgba(246, 240, 230, 0.18);
+		padding-top: 12pt;
+		font-size: 9pt;
+	}
+	.cover .meta span { display: block; color: var(--gold); font-size: 7.5pt; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 3pt; }
+	.cover .fill { background: rgba(228, 177, 90, 0.2); color: var(--paper); }
+
+	/* Blocks */
+	.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10pt; }
+	.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10pt; }
+	.grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8pt; }
+	.card {
+		border: 1px solid var(--line);
+		border-radius: 12pt;
+		padding: 11pt 12pt;
+		background: var(--foam);
+		break-inside: avoid;
+	}
+	.card h4 { margin: 0 0 4pt; font-size: 11pt; font-weight: 600; }
+	.card p { margin: 0; font-size: 9.5pt; color: #4a4239; }
+	.card.dark { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+	.card.dark p { color: rgba(246, 240, 230, 0.75); }
+	.num {
+		font-family: 'Instrument Serif', serif; font-size: 26pt; line-height: 1; color: var(--seal);
+	}
+	.stat { font-family: 'Instrument Serif', serif; font-size: 30pt; line-height: 1; }
+
+	.callout {
+		margin: 14pt 0;
+		border-left: 3pt solid var(--seal);
+		background: #fbf2ea;
+		padding: 10pt 14pt;
+		border-radius: 0 10pt 10pt 0;
+		font-size: 11pt;
+		break-inside: avoid;
+	}
+
+	table { width: 100%; border-collapse: collapse; margin: 10pt 0; font-size: 9.5pt; break-inside: auto; }
+	th { text-align: left; font-size: 7.5pt; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mist); font-weight: 700; padding: 6pt 8pt; border-bottom: 1.5pt solid var(--ink); }
+	td { padding: 7pt 8pt; border-bottom: 1px solid var(--line); vertical-align: top; }
+	tr { break-inside: avoid; }
+	.pill { display: inline-block; padding: 1pt 7pt; border-radius: 99pt; font-size: 8pt; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
+	.p-good { background: #e3f1e8; color: var(--moss); }
+	.p-warn { background: #f8ecd2; color: var(--amber); }
+	.p-bad { background: #f8e0dc; color: var(--wax); }
+
+	/* Flow */
+	.flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8pt; margin: 14pt 0; }
+	.step { position: relative; border-radius: 12pt; padding: 12pt; background: var(--foam); border: 1px solid var(--line); break-inside: avoid; }
+	.step:not(:last-child)::after {
+		content: '→'; position: absolute; right: -9pt; top: 14pt; color: var(--seal); font-weight: 700; font-size: 12pt;
+	}
+	.step h4 { margin: 6pt 0 3pt; font-size: 11pt; }
+	.step p { margin: 0; font-size: 9pt; color: #4a4239; }
+
+	.diagram { display: grid; grid-template-columns: 62mm 1fr; gap: 16pt; align-items: center; margin-top: 12pt; break-inside: avoid; }
+
+	.timeline { position: relative; margin: 12pt 0; padding-left: 18pt; }
+	.timeline::before { content: ''; position: absolute; left: 5pt; top: 4pt; bottom: 4pt; width: 2pt; background: var(--line); }
+	.phase { position: relative; margin-bottom: 12pt; break-inside: avoid; }
+	.phase::before { content: ''; position: absolute; left: -17pt; top: 4pt; width: 10pt; height: 10pt; border-radius: 50%; background: var(--seal); box-shadow: 0 0 0 3pt #fbe3df; }
+	.phase h4 { margin: 0; font-size: 11pt; }
+	.phase .when { font-size: 8pt; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--seal); }
+	.phase p { margin: 2pt 0 0; font-size: 9.5pt; color: #4a4239; }
+
+	.back {
+		margin-top: 22pt;
+		break-inside: avoid;
+		border-radius: 16pt;
+		padding: 18pt;
+		background:
+			radial-gradient(120mm 80mm at 100% 0%, rgba(226, 61, 43, 0.35), transparent 60%),
+			#100e0c;
+		color: var(--paper);
+		display: grid;
+		grid-template-columns: 1fr 48mm;
+		gap: 18pt;
+		align-items: center;
+	}
+	.back h2 { color: var(--paper); }
+	.back p { color: rgba(246, 240, 230, 0.78); }
+	.qr { background: var(--foam); border-radius: 12pt; padding: 8pt; }
+	.qr img { display: block; width: 100%; }
+	.back .fill { background: rgba(228, 177, 90, 0.22); color: var(--paper); }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<section class="cover">
+	<div class="brand"><div class="seal-mark">S</div>Signet</div>
+	<div class="stamp"><div><b>Sealed</b>Verified on site</div></div>
+	<h1>The plate<br />is the <em>proof.</em></h1>
+	<p class="sub">A proposal for tamper-proof licensing and on-site verification of gaming machines in the county, using signed QR tags and a verifier phone app.</p>
+	<div class="meta">
+		<div><span>Prepared for</span>County Government of <span class="fill" style="display:inline;color:inherit;font-size:inherit;letter-spacing:0;text-transform:none;font-weight:400">[County]</span></div>
+		<div><span>Prepared by</span><span class="fill" style="display:inline;color:inherit;font-size:inherit;letter-spacing:0;text-transform:none;font-weight:400">[Company name]</span></div>
+		<div><span>Date</span>October 2026</div>
+	</div>
+</section>
+
+<!-- 1. SUMMARY -->
+<section class="page">
+	<div class="kicker">01 · Executive summary</div>
+	<h2>Know every machine.<br />Prove every licence.</h2>
+	<p class="lead" style="margin-top:12pt">Signet gives the county a simple, reliable way to see which gaming machines are licensed, check them on site in seconds, and act on those that are not.</p>
+
+	<p>Every licensed cabinet receives two tamper-evident QR tags: one on the front panel and a hidden backup inside the locked door. Each tag carries only a digitally signed link — no personal data. A county verifier scans the tag with a phone, and Signet confirms instantly whether the machine is licensed, which premises it belongs to, whether the licence is active or suspended, and whether the tag is genuine or a copy.</p>
+
+	<p>Every scan is recorded with the officer, time and place. The county gets a live register of every machine, a clear trail of every inspection, and the evidence it needs to collect revenue and enforce its by-laws.</p>
+
+	<div class="grid3" style="margin-top:16pt">
+		<div class="card"><div class="stat">&lt; 5 s</div><p style="margin-top:6pt">to verify a machine on site, from opening the camera to a clear result.</p></div>
+		<div class="card"><div class="stat">0</div><p style="margin-top:6pt">personal details stored on the tag. It carries a signed link and nothing else.</p></div>
+		<div class="card"><div class="stat">100%</div><p style="margin-top:6pt">of inspections recorded with officer, time and location for audit.</p></div>
+	</div>
+
+	<h3>What the county gains</h3>
+	<div class="grid2">
+		<div class="card"><h4>More revenue</h4><p>Unlicensed and lapsed machines are found and brought into the system, so licence fees are collected on every machine that operates.</p></div>
+		<div class="card"><h4>Stronger enforcement</h4><p>Officers can tell a genuine licence from a forged or transferred one on the spot, with evidence that holds up.</p></div>
+		<div class="card"><h4>Transparency</h4><p>Every check is logged against a named officer. Results cannot be quietly changed, which reduces room for corruption.</p></div>
+		<div class="card"><h4>Better decisions</h4><p>Live data on machines, premises, wards and compliance helps the county plan inspections and policy.</p></div>
+	</div>
+
+	<div class="callout"><strong>Try it now.</strong> A working demonstration is live at <span class="mono">signet-silk.vercel.app</span>. Scan the code on the last page of this document with any phone.</div>
+</section>
+
+<!-- 2. PROBLEM -->
+<section class="page">
+	<div class="kicker">02 · The challenge</div>
+	<h2>Paper licences are easy to fake.</h2>
+	<p class="lead" style="margin-top:12pt">Today, most counties rely on printed certificates and stickers to show that a gaming machine is licensed. These are hard to check and easy to abuse.</p>
+
+	<div class="grid2" style="margin-top:14pt">
+		<div class="card"><h4>Stickers are copied</h4><p>A printed sticker or certificate can be photocopied and placed on an unlicensed machine. On site, an officer cannot easily tell the difference.</p></div>
+		<div class="card"><h4>Licences move between machines</h4><p>A licence paid for one cabinet is moved to another, or one licence covers several machines.</p></div>
+		<div class="card"><h4>Suspended machines keep running</h4><p>When a licence is suspended, the machine often stays in use because there is no quick way to check its status on site.</p></div>
+		<div class="card"><h4>Records are scattered</h4><p>Registers live in files and spreadsheets. It is hard to know how many machines exist, where they are, and when each was last inspected.</p></div>
+		<div class="card"><h4>Inspections leave no trail</h4><p>There is little record of who inspected which machine, when, and with what result — which weakens enforcement and invites disputes.</p></div>
+		<div class="card"><h4>Revenue leaks</h4><p>Every unlicensed or under-declared machine is a licence fee the county does not collect.</p></div>
+	</div>
+
+	<div class="callout">The result: lost revenue, weak enforcement, exposure of the public — including minors — to unregulated gaming, and little data to plan with.</div>
+</section>
+
+<!-- 3. SOLUTION / HOW IT WORKS -->
+<section class="page">
+	<div class="kicker">03 · How it works</div>
+	<h2>Register. Tag. Scan. Act.</h2>
+	<p class="lead" style="margin-top:12pt">Signet is a web-based system with two parts: a county register of every licensed machine, and a phone app that verifiers use to check machines on site.</p>
+
+	<div class="flow">
+		<div class="step"><div class="num">1</div><h4>Register</h4><p>The county records the machine: licence number, premises, ward, operator and cabinet serial.</p></div>
+		<div class="step"><div class="num">2</div><h4>Tag</h4><p>Signet issues two signed QR tags. They are fixed to the cabinet — front and inside the locked door.</p></div>
+		<div class="step"><div class="num">3</div><h4>Scan</h4><p>A verifier opens the app and points the phone camera at the tag. The result appears in seconds.</p></div>
+		<div class="step"><div class="num">4</div><h4>Act</h4><p>The scan is logged. Problems are flagged for follow-up: notice, suspension or seizure.</p></div>
+	</div>
+
+	<h3>Two tags on every cabinet</h3>
+	<div class="diagram">
+		<svg viewBox="0 0 220 300" xmlns="http://www.w3.org/2000/svg" aria-label="Gaming cabinet with two tags">
+			<rect x="30" y="10" width="160" height="280" rx="16" fill="#16130f" />
+			<rect x="46" y="28" width="128" height="96" rx="8" fill="#2a2520" />
+			<rect x="54" y="36" width="112" height="80" rx="4" fill="#3a2f27" />
+			<text x="110" y="82" fill="#e4b15a" font-family="Georgia" font-size="13" text-anchor="middle">screen</text>
+			<line x1="30" y1="150" x2="190" y2="150" stroke="#3d362f" stroke-width="2" stroke-dasharray="4 4" />
+			<text x="182" y="146" fill="#74685c" font-family="Arial" font-size="8" text-anchor="end">door seam</text>
+			<rect x="80" y="176" width="60" height="60" rx="6" fill="#fffaf3" />
+			<g fill="#16130f">
+				<rect x="86" y="182" width="14" height="14" /><rect x="120" y="182" width="14" height="14" /><rect x="86" y="216" width="14" height="14" />
+				<rect x="106" y="190" width="6" height="6" /><rect x="112" y="202" width="8" height="6" /><rect x="104" y="214" width="6" height="10" /><rect x="120" y="218" width="10" height="6" />
+			</g>
+			<circle cx="140" cy="176" r="9" fill="#e23d2b" />
+			<text x="140" y="180" fill="#fff" font-family="Arial" font-size="10" font-weight="bold" text-anchor="middle">1</text>
+			<rect x="150" y="252" width="26" height="26" rx="4" fill="none" stroke="#e4b15a" stroke-width="2" stroke-dasharray="3 3" />
+			<circle cx="176" cy="252" r="9" fill="#e4b15a" />
+			<text x="176" y="256" fill="#16130f" font-family="Arial" font-size="10" font-weight="bold" text-anchor="middle">2</text>
+		</svg>
+		<div>
+			<div class="card" style="margin-bottom:8pt"><h4>① Primary tag — front panel</h4><p>About 8 cm wide, placed clear of the screen and the door seam so it is easy to scan and cannot be lifted with the door. This is the tag verifiers scan on every visit.</p></div>
+			<div class="card"><h4>② Backup tag — inside the locked door</h4><p>Hidden inside the cabinet. If the front tag is damaged, removed or replaced with a fake, the officer has the operator open the door and scans the backup. Because it is locked away, it is very hard to copy or swap.</p></div>
+		</div>
+	</div>
+
+	<h3>What is on the tag</h3>
+	<p>Only a short signed code, for example <span class="mono">S1.CG-2026-00731.primary.4f9a…</span>. It names the licence and which tag it is, followed by a digital signature that only the county system can produce. Change a single character — or print a code for a licence that does not exist — and the signature no longer matches. <strong>No names, phone numbers or ID numbers are ever printed on the tag.</strong></p>
+</section>
+
+<!-- 4. SCAN RESULTS -->
+<section class="page">
+	<div class="kicker">04 · On site</div>
+	<h2>Every scan gives a clear answer.</h2>
+	<p class="lead" style="margin-top:12pt">The verifier sees a large, colour-coded result with the machine's details, and knows exactly what to do next.</p>
+
+	<table>
+		<thead><tr><th style="width:24%">Result</th><th style="width:40%">What it means</th><th>What the officer does</th></tr></thead>
+		<tbody>
+			<tr><td><span class="pill p-good">Sealed</span></td><td>Genuine front tag, licence active, details match the cabinet.</td><td>Confirm the serial and premises match. Visit recorded. No action needed.</td></tr>
+			<tr><td><span class="pill p-good">Backup verified</span></td><td>The backup tag inside the door is genuine and active.</td><td>Record the visit and note that the front tag needs replacing.</td></tr>
+			<tr><td><span class="pill p-warn">Retired tag</span></td><td>The tag was genuine once but has been replaced. Someone is using an old tag.</td><td>Scan the backup tag. Investigate why the old tag is still on a machine.</td></tr>
+			<tr><td><span class="pill p-warn">Mismatch</span></td><td>A genuine tag, but it belongs to a different cabinet or premises.</td><td>Possible licence transfer. Record the case and check the serial plate.</td></tr>
+			<tr><td><span class="pill p-bad">Suspended</span></td><td>The licence is genuine but currently suspended.</td><td>The machine must not operate. Issue notice or seal the machine per by-law.</td></tr>
+			<tr><td><span class="pill p-bad">Forged</span></td><td>The signature is wrong. The tag was not issued by the county.</td><td>Treat as unlicensed. Photograph, record and begin enforcement.</td></tr>
+			<tr><td><span class="pill p-bad">Unknown</span></td><td>The code is not a Signet tag at all.</td><td>Look for the real tag or backup. If none, treat as unlicensed.</td></tr>
+		</tbody>
+	</table>
+
+	<h3>If a machine has no tag at all</h3>
+	<p>A machine with neither tag is treated as <strong>unlicensed until proven otherwise</strong>. The officer asks the operator to open the door for the backup tag. If there is none, the officer looks up the cabinet serial in the register. If the machine is registered, it is re-tagged; if not, enforcement begins.</p>
+
+	<h3>A day in the life of a verifier</h3>
+	<div class="grid4">
+		<div class="card"><h4>Morning</h4><p>Signs in on a phone. The desk shows the cabinets due for inspection today, by premises and ward.</p></div>
+		<div class="card"><h4>At the premises</h4><p>Taps "Open camera", scans each cabinet. Results appear in seconds. Problems are flagged with one tap.</p></div>
+		<div class="card"><h4>Problem found</h4><p>A suspended machine is running. The result screen shows the licence, premises and suspension, which the officer uses as evidence.</p></div>
+		<div class="card"><h4>End of day</h4><p>Every scan is already in the system. The supervisor sees the visits, the results and the follow-ups — no paperwork.</p></div>
+	</div>
+</section>
+
+<!-- 5. BENEFITS -->
+<section class="page">
+	<div class="kicker">05 · Benefits</div>
+	<h2>Why it matters for the county.</h2>
+
+	<div class="grid2" style="margin-top:14pt">
+		<div class="card dark"><h4>Revenue protection</h4><p>Every operating machine must carry a valid, signed tag. Unlicensed and lapsed machines become visible, and fees are collected in full. A copied tag cannot cover a second machine, because the cabinet details will not match.</p></div>
+		<div class="card dark"><h4>Faster, fairer enforcement</h4><p>Officers decide on facts, not on how a sticker looks. Results are the same for every operator, and each decision is backed by a recorded scan.</p></div>
+		<div class="card"><h4>Accountability and anti-corruption</h4><p>Each scan is tied to a named officer, time and place, and cannot be edited afterwards. Supervisors can see who checked what, and spot visits that never happened.</p></div>
+		<div class="card"><h4>A live register</h4><p>One up-to-date list of every machine, premises and operator, with search, filters and status — replacing scattered files and spreadsheets.</p></div>
+		<div class="card"><h4>Data for planning</h4><p>See compliance by ward, find hotspots of suspended or unlicensed machines, and plan inspections where they matter most.</p></div>
+		<div class="card"><h4>Public protection</h4><p>Suspended and illegal machines are found and stopped sooner, reducing exposure of the public and minors to unregulated gaming.</p></div>
+		<div class="card"><h4>Lower cost</h4><p>Runs on ordinary smartphones officers already carry. No special scanners. Tags are cheap to print and replace.</p></div>
+		<div class="card"><h4>Fair to operators</h4><p>Licensed operators can prove compliance instantly. Inspections are quicker and less disruptive to legitimate businesses.</p></div>
+	</div>
+
+	<h3>Who uses Signet</h3>
+	<table>
+		<thead><tr><th style="width:26%">User</th><th>What they do</th></tr></thead>
+		<tbody>
+			<tr><td><strong>County licensing office</strong></td><td>Registers machines, issues and retires tags, suspends or reinstates licences.</td></tr>
+			<tr><td><strong>Verifiers / inspectors</strong></td><td>Scan cabinets on site, see results instantly, flag problems.</td></tr>
+			<tr><td><strong>Supervisors</strong></td><td>Assign inspections, follow up cases, review officer activity and reports.</td></tr>
+			<tr><td><strong>County leadership</strong></td><td>View dashboards on revenue, compliance and enforcement by ward.</td></tr>
+			<tr><td><strong>Operators (optional)</strong></td><td>View their own machines, licence status and renewal dates.</td></tr>
+		</tbody>
+	</table>
+</section>
+
+<!-- 6. SECURITY + FEATURES -->
+<section class="page">
+	<div class="kicker">06 · Security &amp; privacy</div>
+	<h2>Built to be trusted.</h2>
+
+	<div class="grid2" style="margin-top:14pt">
+		<div class="card"><h4>Signed tags</h4><p>Each code carries a digital signature made with a secret key held only by the county system. Forged and altered tags are detected instantly.</p></div>
+		<div class="card"><h4>Two-tag design</h4><p>The backup tag inside the locked door means a damaged or swapped front tag never leaves a machine unverifiable.</p></div>
+		<div class="card"><h4>Retire and replace</h4><p>Lost or damaged tags are retired in the system. Any later scan of a retired tag is refused and flagged.</p></div>
+		<div class="card"><h4>No personal data on tags</h4><p>Tags carry a signed link only. Personal information stays in the secured county system, in line with the Data Protection Act, 2019.</p></div>
+		<div class="card"><h4>Officer accounts and roles</h4><p>Only signed-in officers can verify machines. Licensing staff, verifiers and supervisors see only what their role allows.</p></div>
+		<div class="card"><h4>Complete audit trail</h4><p>Every registration, tag change, suspension and scan is logged permanently with who, when and where.</p></div>
+	</div>
+
+	<h3>Built for the field</h3>
+	<div class="grid3">
+		<div class="card"><h4>Any smartphone</h4><p>Runs in the phone's web browser. Nothing to install from an app store.</p></div>
+		<div class="card"><h4>Seconds per check</h4><p>One tap opens the camera; the result appears as soon as the tag is in view.</p></div>
+		<div class="card"><h4>Hosted securely</h4><p>Encrypted connections and hosting, with daily backups of the register.</p></div>
+	</div>
+</section>
+
+<section class="page">
+	<div class="kicker">07 · Features</div>
+	<h2>What Signet does.</h2>
+	<p class="lead" style="margin-top:12pt">The core is already working in the live demonstration. Further features are delivered in phases.</p>
+	<table>
+		<thead><tr><th style="width:38%">Feature</th><th style="width:16%">Status</th><th>Description</th></tr></thead>
+		<tbody>
+			<tr><td>Phone camera scanning</td><td><span class="pill p-good">Live in demo</span></td><td>Works in the phone browser. No app store install needed.</td></tr>
+			<tr><td>Instant verification results</td><td><span class="pill p-good">Live in demo</span></td><td>Seven clear outcomes with machine and licence details.</td></tr>
+			<tr><td>Machine register with search and filters</td><td><span class="pill p-good">Live in demo</span></td><td>Filter by status, visit due, tag state; sort and search.</td></tr>
+			<tr><td>Register machines and print tags</td><td><span class="pill p-good">Live in demo</span></td><td>New cabinet in under a minute, with both QR tags ready to print.</td></tr>
+			<tr><td>Inspection desk and scan log</td><td><span class="pill p-good">Live in demo</span></td><td>Cabinets due today and recent scans per officer.</td></tr>
+			<tr><td>Enforcement map</td><td><span class="pill p-warn">Phase 2</span></td><td>Map of suspended and defaulting premises with directions.</td></tr>
+			<tr><td>GPS and photo evidence</td><td><span class="pill p-warn">Phase 2</span></td><td>Location and photos attached to each scan; alert if a machine has moved.</td></tr>
+			<tr><td>Works without signal</td><td><span class="pill p-warn">Phase 2</span></td><td>Scans saved on the phone and uploaded when back online.</td></tr>
+			<tr><td>Dashboards and reports</td><td><span class="pill p-warn">Phase 2</span></td><td>Compliance by ward, officer activity, exports to PDF and Excel.</td></tr>
+			<tr><td>Licence fee payments</td><td><span class="pill p-warn">Phase 3</span></td><td>Link to county revenue systems and M-Pesa for renewals and fines.</td></tr>
+			<tr><td>Operator portal</td><td><span class="pill p-warn">Phase 3</span></td><td>Operators view their machines, renewals and notices.</td></tr>
+		</tbody>
+	</table>
+</section>
+
+<!-- 8. IMPLEMENTATION -->
+<section class="page">
+	<div class="kicker">08 · Implementation</div>
+	<h2>Start small. Prove it. Scale.</h2>
+	<p class="lead" style="margin-top:12pt">We recommend a pilot in one or two wards, followed by county-wide rollout once results are confirmed.</p>
+
+	<div class="timeline">
+		<div class="phase"><div class="when">Weeks 1 – 4 · Set-up</div><h4>Configure and load data</h4><p>Agree licence rules and by-law workflows with the county. Import the existing machine register. Create officer accounts. Set up secure hosting and signing keys.</p></div>
+		<div class="phase"><div class="when">Weeks 5 – 8 · Tagging</div><h4>Tag machines in the pilot wards</h4><p>Print tamper-evident tags. Officers fix front and backup tags to every licensed cabinet, registering serials as they go.</p></div>
+		<div class="phase"><div class="when">Weeks 9 – 20 · Pilot</div><h4>Inspect and measure</h4><p>Officers run routine inspections with Signet. We track machines found unlicensed, revenue recovered, time per inspection and officer feedback.</p></div>
+		<div class="phase"><div class="when">Month 6 · Review</div><h4>Report to the county</h4><p>Pilot results and recommendations presented. Decision on county-wide rollout.</p></div>
+		<div class="phase"><div class="when">Months 7 – 12 · Rollout</div><h4>County-wide and Phase 2 features</h4><p>All wards tagged. Enforcement map, GPS and photo evidence, offline mode and dashboards added.</p></div>
+	</div>
+
+	<div class="grid2">
+		<div class="card"><h4>The county provides</h4><ul style="margin:4pt 0 0;padding-left:14pt;font-size:9.5pt;color:#4a4239"><li>A project lead in the licensing office</li><li>The current machine and licence register</li><li>Officers for training and tagging</li><li>Approval of enforcement workflows</li></ul></div>
+		<div class="card"><h4>We provide</h4><ul style="margin:4pt 0 0;padding-left:14pt;font-size:9.5pt;color:#4a4239"><li>The Signet system, hosting and support</li><li>Tamper-evident tag design and printing</li><li>Officer training and guides</li><li>Pilot reporting and improvements</li></ul></div>
+	</div>
+</section>
+
+<section class="page">
+	<div class="kicker">09 · Measuring success</div>
+	<h2>Clear targets.</h2>
+	<table>
+		<thead><tr><th style="width:50%">Measure</th><th>Target</th></tr></thead>
+		<tbody>
+			<tr><td>Licensed machines tagged in pilot wards</td><td><span class="fill">[e.g. 100% within 8 weeks]</span></td></tr>
+			<tr><td>Unlicensed machines identified</td><td><span class="fill">[target to agree]</span></td></tr>
+			<tr><td>Licence revenue collected vs. last year</td><td><span class="fill">[e.g. +__%]</span></td></tr>
+			<tr><td>Average time to verify a machine</td><td>Under 1 minute, including the walk to the cabinet</td></tr>
+			<tr><td>Inspections with a full digital record</td><td>100%</td></tr>
+		</tbody>
+	</table>
+
+	<div class="kicker" style="margin-top:22pt">10 · Investment</div>
+	<h2>Indicative costs.</h2>
+	<p class="lead" style="margin-top:12pt">Final figures depend on the number of machines and wards. The structure below is a guide for discussion.</p>
+
+	<table>
+		<thead><tr><th style="width:44%">Item</th><th style="width:22%">Basis</th><th>Amount (KES)</th></tr></thead>
+		<tbody>
+			<tr><td>Set-up, configuration and data import</td><td>One-off</td><td><span class="fill">[ ]</span></td></tr>
+			<tr><td>Tamper-evident tags (two per machine)</td><td>Per machine</td><td><span class="fill">[ ]</span></td></tr>
+			<tr><td>Officer training and field guides</td><td>One-off</td><td><span class="fill">[ ]</span></td></tr>
+			<tr><td>Pilot (ward-level, 3 months)</td><td>Fixed</td><td><span class="fill">[ ]</span></td></tr>
+			<tr><td>Licence, hosting and support</td><td>Per year</td><td><span class="fill">[ ]</span></td></tr>
+			<tr><td><strong>Total — pilot</strong></td><td></td><td><strong><span class="fill">[ ]</span></strong></td></tr>
+		</tbody>
+	</table>
+	<p class="muted" style="font-size:9pt">Officers use their existing smartphones. No special scanning hardware is required.</p>
+</section>
+
+<section class="page">
+	<div class="kicker">11 · Risks</div>
+	<h2>Risks, handled.</h2>
+	<table>
+		<thead><tr><th style="width:34%">Risk</th><th>How Signet handles it</th></tr></thead>
+		<tbody>
+			<tr><td>Tags are copied</td><td>A copied tag only works on its own cabinet. On another machine the serial and premises do not match, and the scan shows a mismatch.</td></tr>
+			<tr><td>Front tag removed or damaged</td><td>The backup tag inside the locked door is scanned instead. The front tag is retired and replaced.</td></tr>
+			<tr><td>Poor network at premises</td><td>Phase 2 offline mode verifies signatures on the phone and uploads scans later.</td></tr>
+			<tr><td>Officer misuse</td><td>Every scan is tied to the officer, time and place, and cannot be edited. Supervisors review activity.</td></tr>
+			<tr><td>Operator resistance</td><td>Early engagement, clear by-law backing, and fast, fair inspections that benefit compliant operators.</td></tr>
+			<tr><td>Data protection</td><td>No personal data on tags. Role-based access, encrypted hosting and audit logs, aligned with the Data Protection Act, 2019.</td></tr>
+		</tbody>
+	</table>
+</section>
+
+<!-- BACK -->
+<section class="back">
+	<div>
+		<div class="kicker" style="color:var(--gold)">Next steps</div>
+		<h2>See it working today.</h2>
+		<p style="margin-top:10pt">Scan the code with any phone to open the live demonstration. Sign in as a demo verifier, open the camera and scan a sample tag.</p>
+		<ul style="color:rgba(246,240,230,0.85)">
+			<li>Live demonstration to the licensing office</li>
+			<li>Agree pilot wards, targets and timeline</li>
+			<li>Sign pilot agreement and begin set-up</li>
+		</ul>
+		<p style="margin-top:14pt"><strong style="color:var(--paper)">Contact</strong><br /><span class="fill">[Name]</span> · <span class="fill">[Phone]</span> · <span class="fill">[Email]</span></p>
+	</div>
+	<div>
+		<div class="qr"><img src="demo-qr.svg" alt="QR code to the Signet demo" /></div>
+		<p class="mono" style="text-align:center;font-size:8pt;margin-top:6pt">signet-silk.vercel.app</p>
+	</div>
+</section>
+
+</body>
+</html>
