@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import Nav from '$lib/components/Nav.svelte';
 	import Wordmark from '$lib/components/Wordmark.svelte';
 
 	type InspectResult = {
@@ -91,7 +92,7 @@
 				await reader.start(
 					{ facingMode: 'environment' },
 					{ fps: 10, qrbox: { width: 220, height: 220 } },
-					(text) => {
+					(text: string) => {
 						if (locked) return;
 						locked = true;
 						void submit(text);
@@ -155,7 +156,7 @@
 <main class="mx-auto flex min-h-dvh max-w-md flex-col px-4 py-4 text-paper">
 	<header class="flex items-center justify-between">
 		<a href="/desk"><Wordmark light compact /></a>
-		<a class="text-sm text-gold" href="/tags">Floor tags</a>
+		<Nav here="/scan" name={data.user.name} always />
 	</header>
 
 	<div class="finder mt-4">

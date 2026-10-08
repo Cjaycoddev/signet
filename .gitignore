@@ -1,6 +1,8 @@
+data
 node_modules
 .svelte-kit
 .vercel
 build
 .vite
 *.log
+.env*

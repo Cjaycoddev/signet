@@ -1,4 +1,6 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
 
 const SECRET = 'signet-demo-seal';
 
@@ -135,6 +137,188 @@ const machines: Machine[] = [
 ];
 
 const scans: ScanEvent[] = [];
+const seedLicences = new Set(machines.map((machine) => machine.licence));
+let added: Machine[] = [];
+
+export type NewCabinet = {
+	premises: string;
+	address: string;
+	ward: string;
+	county: string;
+	operator: string;
+	model: string;
+	serial: string;
+	status: 'active' | 'suspended';
+};
+
+function storePath() {
+	if (process.env.VERCEL) return '/tmp/signet-added.json';
+	return join(process.cwd(), 'data', 'signet-added.json');
+}
+
+function cleanText(value: unknown, max = 80) {
+	return String(value ?? '').replace(/\s+/g, ' ').trim().slice(0, max);
+}
+
+function asMachine(value: unknown): Machine | null {
+	if (!value || typeof value !== 'object') return null;
+	const row = value as Machine;
+	if (!/^CG-\d{4}-\d{5}$/.test(row.licence || '')) return null;
+	if (seedLicences.has(row.licence)) return null;
+	if (!row.premises || !row.address || !row.operator || !row.serial) return null;
+	return {
+		licence: row.licence,
+		premises: cleanText(row.premises),
+		address: cleanText(row.address),
+		ward: cleanText(row.ward, 40),
+		county: cleanText(row.county, 40) || 'Nairobi City',
+		operator: cleanText(row.operator),
+		model: cleanText(row.model, 40) || 'Cabinet',
+		serial: cleanText(row.serial, 40),
+		status: row.status === 'suspended' ? 'suspended' : 'active',
+		due: true,
+		lastInspection: cleanText(row.lastInspection, 40) || 'Not yet',
+		primary: {
+			state: 'live',
+			placement: 'Flat front panel, away from any door seam and clear of the screen.',
+			size: '8 cm square'
+		},
+		backup: {
+			state: 'live',
+			placement: 'Inside the locked door.',
+			size: 'Hidden plate'
+		}
+	};
+}
+
+function readBook(raw?: string | null) {
+	if (!raw) return [] as Machine[];
+	try {
+		const parsed = JSON.parse(raw) as unknown;
+		if (!Array.isArray(parsed)) return [];
+		return parsed.map(asMachine).filter((machine): machine is Machine => Boolean(machine));
+	} catch {
+		return [];
+	}
+}
+
+function readFileBook() {
+	try {
+		if (!existsSync(storePath())) return [];
+		return readBook(readFileSync(storePath(), 'utf8'));
+	} catch {
+		return [];
+	}
+}
+
+function writeFileBook(book: Machine[]) {
+	try {
+		const path = storePath();
+		mkdirSync(dirname(path), { recursive: true });
+		writeFileSync(path, JSON.stringify(book));
+	} catch {
+		/* the cookie and the live list still hold the cabinet */
+	}
+}
+
+async function readCloudBook() {
+	if (!process.env.BLOB_READ_WRITE_TOKEN) return null;
+	try {
+		const { get } = await import('@vercel/blob');
+		const result = await get('signet-added.json', { access: 'private', useCache: false });
+		if (!result || result.statusCode !== 200) return [];
+		return readBook(await new Response(result.stream).text());
+	} catch {
+		return null;
+	}
+}
+
+async function writeCloudBook(book: Machine[]) {
+	if (!process.env.BLOB_READ_WRITE_TOKEN) return;
+	try {
+		const { put } = await import('@vercel/blob');
+		await put('signet-added.json', JSON.stringify(book), {
+			access: 'private',
+			allowOverwrite: true,
+			addRandomSuffix: false,
+			contentType: 'application/json'
+		});
+	} catch {
+		/* local file and cookie still keep the sitting */
+	}
+}
+
+function merge(books: Machine[][]) {
+	const map = new Map<string, Machine>();
+	for (const book of books) {
+		for (const machine of book) map.set(machine.licence, machine);
+	}
+	added = [...map.values()];
+}
+
+export async function ready(cookieRaw?: string | null) {
+	const cloud = await readCloudBook();
+	merge([cloud ?? [], readFileBook(), added, readBook(cookieRaw)]);
+}
+
+export function bookJson() {
+	return JSON.stringify(added);
+}
+
+function all() {
+	return [...machines, ...added];
+}
+
+function nextLicence() {
+	const nums = all().map((machine) => Number(machine.licence.split('-').pop()));
+	const next = Math.max(0, ...nums) + 1;
+	return `CG-2026-${String(next).padStart(5, '0')}`;
+}
+
+export function createCabinet(input: NewCabinet) {
+	const premises = cleanText(input.premises);
+	const address = cleanText(input.address);
+	const ward = cleanText(input.ward, 40);
+	const operator = cleanText(input.operator);
+	const model = cleanText(input.model, 40);
+	const serial = cleanText(input.serial, 40).toUpperCase();
+	if (premises.length < 2 || address.length < 2 || ward.length < 2 || operator.length < 2 || serial.length < 3) {
+		return { error: 'Premises, address, ward, operator, and serial are required.' };
+	}
+	if (all().some((machine) => machine.serial.toUpperCase() === serial)) {
+		return { error: `${serial} is already on a cabinet.` };
+	}
+	const machine: Machine = {
+		licence: nextLicence(),
+		premises,
+		address,
+		ward,
+		county: cleanText(input.county, 40) || 'Nairobi City',
+		operator,
+		model: model || 'Cabinet',
+		serial,
+		status: input.status === 'suspended' ? 'suspended' : 'active',
+		due: true,
+		lastInspection: 'Not yet',
+		primary: {
+			state: 'live',
+			placement: 'Flat front panel, away from any door seam and clear of the screen.',
+			size: '8 cm square'
+		},
+		backup: {
+			state: 'live',
+			placement: 'Inside the locked door.',
+			size: 'Hidden plate'
+		}
+	};
+	added.push(machine);
+	writeFileBook(added);
+	return { machine };
+}
+
+export async function saveBook() {
+	await writeCloudBook(added);
+}
 
 function mac(body: string) {
 	return createHmac('sha256', SECRET).update(body).digest('hex').slice(0, 20);
@@ -146,7 +330,7 @@ export function tagPayload(licence: string, role: Role) {
 }
 
 export function listMachines() {
-	return machines;
+	return all();
 }
 
 export function listScans() {
@@ -154,7 +338,7 @@ export function listScans() {
 }
 
 export function tagsForBoard() {
-	return machines.flatMap((machine) =>
+	return all().flatMap((machine) =>
 		(['primary', 'backup'] as Role[]).map((role) => ({
 			licence: machine.licence,
 			premises: machine.premises,
@@ -195,7 +379,7 @@ export function inspect(raw: string, verifier: string, expected?: string | null)
 			detail: 'This pattern copies a Signet tag, but the signature is wrong. Do not treat the cabinet as licensed on this scan.'
 		};
 	}
-	const machine = machines.find((item) => item.licence === licence);
+	const machine = all().find((item) => item.licence === licence);
 	if (!machine) {
 		return {
 			ok: false,

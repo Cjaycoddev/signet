@@ -9,6 +9,7 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json"
 	},
 	"dependencies": {
+		"@vercel/blob": "^2.8.1",
 		"html5-qrcode": "^2.3.8",
 		"qrcode": "^1.5.4"
 	},

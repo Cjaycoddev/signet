@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import QRCode from 'qrcode';
+	import Nav from '$lib/components/Nav.svelte';
 	import Wordmark from '$lib/components/Wordmark.svelte';
 
 	let { data } = $props();
@@ -26,7 +27,7 @@
 <main class="mx-auto min-h-screen max-w-5xl px-5 py-6 text-paper">
 	<header class="flex items-center justify-between">
 		<a href="/"><Wordmark light compact /></a>
-		<a class="btn btn-seal" href="/scan">Scan with the camera</a>
+		<Nav here="/tags" name={data.user?.name ?? ''} />
 	</header>
 	<h1 class="display mt-10 text-6xl">Hold a phone over one of these.</h1>
 	<p class="mt-3 max-w-xl text-paper/70">

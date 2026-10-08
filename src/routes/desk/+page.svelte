@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Nav from '$lib/components/Nav.svelte';
 	import Wordmark from '$lib/components/Wordmark.svelte';
 	let { data } = $props();
 
@@ -15,9 +16,10 @@
 <main class="mx-auto min-h-screen max-w-5xl px-5 py-6 text-paper">
 	<header class="flex items-center justify-between gap-3">
 		<a href="/"><Wordmark light compact /></a>
-		<div class="flex items-center gap-3 text-sm">
-			<span class="text-paper/70">{data.user.name}</span>
-			<form method="POST" action="/logout"><button class="text-gold" type="submit">Sign out</button></form>
+		<div class="flex items-center gap-4">
+			<Nav here="/desk" name={data.user.name} />
+			<span class="hidden text-sm text-paper/70 md:inline">{data.user.name}</span>
+			<form class="hidden md:block" method="POST" action="/logout"><button class="text-sm text-gold" type="submit">Sign out</button></form>
 		</div>
 	</header>
 
@@ -26,6 +28,7 @@
 			<p class="text-xs font-semibold tracking-[0.18em] text-gold uppercase">{data.user.county}</p>
 			<h1 class="display mt-3 text-6xl">{data.due.length} plates are due.</h1>
 		</div>
+		<a class="btn btn-ghost" href="/board">{data.total} in the book</a>
 		<a class="btn btn-seal" href="/scan">Open the camera</a>
 	</section>
 
