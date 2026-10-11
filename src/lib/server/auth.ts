@@ -2,7 +2,7 @@ import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
 import type { Cookies } from '@sveltejs/kit';
 
 const COOKIE = 'signet_session';
-const SECRET = 'signet-session-demo';
+const SECRET = process.env.AUTH_SECRET!;
 
 export type Verifier = { id: string; name: string; county: string; email: string };
 
@@ -11,7 +11,7 @@ const people: Verifier[] = [
 	{ id: 'leo', name: 'Leo Mwangi', county: 'Nairobi City', email: 'leo@signet.test' }
 ];
 
-const PASSWORD = 'signet';
+const PASSWORD = process.env.DEMO_PASSWORD!;
 
 export function verifiers() {
 	return people;

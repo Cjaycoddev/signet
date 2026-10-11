@@ -6,3 +6,6 @@ build
 .vite
 *.log
 .env*
+
+!.env.example
+*.bak

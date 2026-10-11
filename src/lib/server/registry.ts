@@ -2,7 +2,7 @@ import { createHmac, timingSafeEqual } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 
-const SECRET = 'signet-demo-seal';
+const SECRET = process.env.SEAL_SECRET!;
 
 export type Role = 'primary' | 'backup';
 export type TagState = 'live' | 'retired';
